@@ -1,0 +1,65 @@
+@use "bootstrap" as *;
+@use "bootstrap-customize" as *;
+@use "common" as *;
+
+$bg-tile-width: 616px;
+$bg-tile-height: 831px;
+$bg-tile-scale: 0.4;
+
+@property --bg-gradient-angle {
+  syntax: '<angle>';
+  initial-value: 135deg;
+  inherits: false;
+}
+
+html {
+  overflow-y: scroll;
+  height: 100% !important;
+}
+
+body {
+  height: 100%;
+
+  background: url("../images/cot-logo-bg-tile.png");
+  background-size: calc($bg-tile-width * $bg-tile-scale);
+  animation: BackgroundTilesScroll 30s linear infinite;
+
+  font-family: "Cairo", var(--bs-font-sans-serif), sans-serif;
+}
+
+#root {
+  display: flex;
+
+  width: 100%;
+  min-height: 100%;
+
+  --bg-gradient-angle: 135deg;
+  --bg-gradient-opacity: 0.22;
+  //--bg-gradient-opacity: 1;
+  background: linear-gradient(
+                  var(--bg-gradient-angle),
+                  rgba(190, 122, 255, var(--bg-gradient-opacity)),
+                  rgba(44, 115, 210, var(--bg-gradient-opacity))
+  );
+  animation: BackgroundGradientRotate 15s linear infinite;
+}
+
+@keyframes BackgroundGradientRotate {
+  0% {
+    --bg-gradient-angle: 0deg;
+  }
+
+  100% {
+    --bg-gradient-angle: 360deg;
+  }
+}
+
+@keyframes BackgroundTilesScroll {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: calc($bg-tile-width * $bg-tile-scale) calc(-#{$bg-tile-height} * $bg-tile-scale);
+  }
+}

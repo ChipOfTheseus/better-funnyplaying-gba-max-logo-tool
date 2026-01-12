@@ -1,0 +1,57 @@
+.max-logo-image {
+  max-width: 960px;
+  width: 100%;
+
+  outline: 2px solid var(--bs-primary-border-subtle);
+  outline-offset: 5px;
+
+  //image-rendering: -moz-crisp-edges;
+  //image-rendering: pixelated;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 100%;
+  max-width: 1200px;
+
+  //padding-right: 3rem;
+  //padding-left: 3rem;
+}
+
+.main-card {
+  --bs-card-bg: rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(4px);
+  box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+
+  width: 100%;
+
+  .card-body {
+
+  }
+}
+
+.big-button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 1rem 3rem;
+
+  font-size: 2rem;
+
+  > svg {
+    margin-bottom: 0.2em;
+  }
+}
+
+footer {
+
+}
+
+input[type=color]:disabled {
+  opacity: 0.5;
+}

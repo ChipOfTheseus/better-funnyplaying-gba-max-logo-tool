@@ -1,0 +1,115 @@
+@use "common" as *;
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+body {
+  //--bs-body-color: #{$text-main-color};
+  --bs-secondary-color: #4a5157;
+  --bs-border-radius: 0.5rem;
+  --bs-info-rgb: 31, 170, 228;
+
+  --bs-body-color: #212529;
+  --bs-body-color-rgb: 33, 37, 41;
+}
+
+.nav-tabs .nav-link {
+  --bs-nav-tabs-border-width: 2px;
+  --bs-nav-tabs-border-color: rgba(0, 0, 0, 0.15);
+
+  border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+
+  &.active, &:hover, &.active:hover, &.active:focus {
+    border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-primary);
+  }
+}
+
+.badge {
+  white-space: normal;
+}
+
+.dropdown-menu {
+  display: block;
+  overflow: hidden;
+
+  transition: opacity .3s ease, max-height .3s ease, padding .3s ease, margin .3s ease;
+
+  &.show {
+    opacity: 1;
+    max-height: 25rem;
+  }
+
+  &:not(.show) {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+
+    margin: 0 !important;
+  }
+}
+
+.navbar {
+  --bs-navbar-padding-x: 0.75rem;
+  z-index: 100;
+}
+
+.btn {
+}
+
+.btn-border {
+  border: var(--bs-btn-border-width) solid var(--bs-btn-border-color);
+}
+
+.card-body {
+  //@include relative-font-size-rem(16, 19);
+}
+
+h5, .h5 {
+  //@include relative-font-size-rem(28, 40);
+  font-weight: bold;
+}
+
+.form-control {
+  border-color: #DCDCDC;
+}
+
+b, strong {
+  font-weight: 600;
+}
+
+a {
+  //@include regular-link;
+}
+
+.card {
+  a:not(.btn,.dropdown-item) {
+    //@include regular-content-link;
+  }
+}
+
+hr {
+  height: 2px;
+  background: #E5E5E5;
+  opacity: 1;
+  border: 0;
+}
+
+.modal-backdrop {
+  background: #152332;
+
+  &.show {
+    opacity: 0.8;
+  }
+}
+
+.form-range {
+  &::-moz-range-track {
+    background: rgba(200, 200, 200, 0.7);
+  }
+
+  &::-webkit-slider-runnable-track {
+    background: rgba(200, 200, 200, 0.7);
+  }
+}
+
