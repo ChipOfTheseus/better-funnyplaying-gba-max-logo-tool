@@ -257,7 +257,7 @@ function LogoConverter(props: {
   return <>
     <div className="d-flex flex-column gap-3">
       <Row className="align-items-center">
-        <Col xs={16} sm={4}>
+        <Col xs={16} sm={5} lg={4}>
           <Form.Check
             type="radio"
             id="sourceImageSourceFile"
@@ -280,7 +280,7 @@ function LogoConverter(props: {
       </Row>
 
       <Row className="align-items-center">
-        <Col xs={16} sm={4}>
+        <Col xs={16} sm={5} lg={4}>
           <Form.Check
             type="radio"
             id="sourceImageSourceGallery"

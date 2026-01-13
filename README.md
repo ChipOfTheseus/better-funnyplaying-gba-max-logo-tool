@@ -1,6 +1,6 @@
-# Better FunnyPlaying GBA MAX Screen Logo Tool
+# Better FunnyPlaying GBA IPS MAX Screen Logo Tool
 
-A  FunnyPlaying GBA MAX screen logo converter &amp; uploader tool.
+A (much) better FunnyPlaying GBA IPS MAX screen logo converter &amp; uploader tool.
 
 As compared to the official tool:
 

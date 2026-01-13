@@ -15,7 +15,7 @@ function Main() {
       <Card className="main-card">
         <Card.Body className="d-flex flex-column">
           <h1 className="text-center fw-semibold mb-4">
-            Better FunnyPlaying GBA MAX Screen Logo Tool
+            Better FunnyPlaying GBA IPS MAX Screen Logo Tool
           </h1>
 
           <h2>1. Choose Logo Image</h2>
@@ -47,7 +47,7 @@ function Main() {
         </Card.Body>
       </Card>
 
-      <footer className="d-flex flex-column gap-1 mt-3 text-center text-secondary-emphasis fs-6">
+      <footer className="mt-3">
         <span>
           This page is a single file and runs completely locally.
           You can use 'Save As' to save it as an <span className="font-monospace">.html</span> file and use it offline.
