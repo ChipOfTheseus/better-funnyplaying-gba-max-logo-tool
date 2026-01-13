@@ -1,10 +1,21 @@
-# funnyplaying-gba-max-logo-tool
-Better FunnyPlaying GBA MAX screen logo uploader &amp; converter tool
+# Better FunnyPlaying GBA MAX screen logo
 
+A  FunnyPlaying GBA MAX screen logo converter &amp; uploader tool.
+
+As compared to the official tool:
+
+- 🌐 Browser-based, no need to download anything. Requires web browser with [WebSerial](https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API) support (Google Chrome, Microsoft Edge etc.).
+- 💻 Not limited to Windows, runs everywhere you can run a browser.
+- 🧮 Advanced algorithms for automatically reducing the color count.
+- 🎨 Allows customizing background color and tinting black-and-white logos.
+- 🖼️ Comes with a gallery of premade logos. Just select and upload!
+- ✨ Much prettier UI
+
+![Screenshot](resources/screenshot.png)
 
 <details>
 
-<summary>Template README</summary>
+<summary>Page Template README</summary>
 
 # React + TypeScript + Vite
 

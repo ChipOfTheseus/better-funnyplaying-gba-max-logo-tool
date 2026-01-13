@@ -252,7 +252,7 @@ function LogoConverter(props: {
     setMaxScreenLogoImageData(null);
 
     updateConvertedImageData();
-  }, [backgroundColor, brightness, contrast, maxColorCount, useColorization, colorizationColor, imageQuantizationType, sourceImageFile]);
+  }, [backgroundColor, brightness, contrast, maxColorCount, useColorization, colorizationColor, imageQuantizationType, sourceImageFile, sourceImageGallery]);
 
   return <>
     <div className="d-flex flex-column gap-3">
