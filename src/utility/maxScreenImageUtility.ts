@@ -71,8 +71,10 @@ export function createMaxScreenCompatibleRawImageData(
     [workImageDataPoints],
     {
       colors: maxColorCount,
+
+      // Those options seem to work best for this case
       paletteQuantization: "rgbquant",
-      colorDistanceFormula: "euclidean-bt709-noalpha"
+      colorDistanceFormula: "cie94-graphic-arts"
     }
   );
 
@@ -164,7 +166,6 @@ export function createMaxScreenCompressedImageBuffers(palette: iq.utils.Point[],
 
   const valid = rleImageData.length < MaxScreen.maxLogoUploadImageDataSize;
 
-
   // RGB to BGR
   const paletteUint8 = new Uint8Array(MaxScreen.logoColorCount * 3);
   for (let i = 0; i < paletteColorsCount; i++) {
@@ -194,7 +195,7 @@ export function createMaxScreenLogoUploadBlocks(logoIndex: number, data: MaxScre
 
   const headerBlock = new Uint8Array([
     0xAA,
-    0x50 + logoIndex,
+    0x51 + logoIndex,
     (totalLength >> 8) & 0xFF,
     totalLength & 0xFF
   ]);

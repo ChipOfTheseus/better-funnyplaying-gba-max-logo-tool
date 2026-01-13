@@ -1,0 +1,25 @@
+1. Send 4 bytes
+[0]: 0xAA
+[1]: 0x51 + logo slot index
+[2-3]: uint16, total send buffer size
+
+2. Wait for 0x55 response byte
+
+3. Fill send buffer - 12 bytes of 4 palette colors (BGR), followed by RLE image data
+
+4. Send 128 bytes from the send buffer
+
+5. Wait for 128 * 0x55 response bytes
+
+6. If there are still blocks in the send buffer, go back to step 4
+
+7. Send remainder (N < 128) bytes from the send buffer
+
+8. Wait for N * 0x55 response bytes
+
+total 16 bytes of header data
+max 4070 bytes of RLE image data
+
+RLE:
+
+every byte is: 2 upper bits - palette color index, 6 lower bits - number of pixels with that color (0-63)

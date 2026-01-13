@@ -1,5 +1,5 @@
 # funnyplaying-gba-max-logo-tool
-FunnyPlaying GBA MAX display logo uploader &amp; converter tool
+Better FunnyPlaying GBA MAX screen logo uploader &amp; converter tool
 
 
 <details>

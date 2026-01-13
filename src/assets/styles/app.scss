@@ -25,6 +25,8 @@ body {
   animation: BackgroundTilesScroll 30s linear infinite;
 
   font-family: "Cairo", var(--bs-font-sans-serif), sans-serif;
+
+  padding-right: 0 !important; // modal hack
 }
 
 #root {

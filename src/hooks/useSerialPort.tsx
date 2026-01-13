@@ -65,7 +65,6 @@ export function useSerialPort(props: {
             }
 
             const valueUint8 = value as Uint8Array;
-
             dataReceivedCallback.current(valueUint8);
           }
         } catch (error: any) {

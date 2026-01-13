@@ -1,3 +1,7 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
 .max-logo-image {
   max-width: 960px;
   width: 100%;
@@ -17,9 +21,6 @@
 
   min-height: 100%;
   max-width: 1200px;
-
-  //padding-right: 3rem;
-  //padding-left: 3rem;
 }
 
 .main-card {
@@ -34,6 +35,14 @@
   }
 }
 
+input[type=color]:disabled {
+  opacity: 0.5;
+}
+
+input[type=file]:disabled {
+  opacity: 0.75;
+}
+
 .big-button {
   display: block;
   margin-left: auto;
@@ -41,17 +50,69 @@
 
   padding: 1rem 3rem;
 
-  font-size: 2rem;
+  font-size: 1.5rem;
+
+  > svg {
+    margin-bottom: 0.2em;
+  }
+
+  &.progress-bar-striped {
+    color: var(--bs-btn-color);
+    background-color: var(--bs-btn-hover-bg);
+
+    --bs-progress-height: 2rem;
+    --bs-progress-width: 5rem;
+  }
+}
+
+.medium-button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 1rem 2.25rem;
+
+  font-size: 1.5rem;
 
   > svg {
     margin-bottom: 0.2em;
   }
 }
 
-footer {
+.connect-button {
+  padding: 0.5rem 2rem;
 
+  font-size: 1.25rem;
+
+  > svg {
+    margin-bottom: 0.2em;
+  }
 }
 
-input[type=color]:disabled {
-  opacity: 0.5;
+.logo-slot-button {
+  --bs-border-width: 2px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.gallery-image-button {
+  --bs-btn-border-width: 3px;
+  $checker-color-1: #222;
+  $checker-color-2: #111;
+
+  padding: 0;
+  border:0;
+  outline: 3px solid var(--bs-primary-border-subtle);
+  outline-offset: 4px;
+  border-radius: 0;
+  background-position: 0 0, 16px 16px;
+  background-size: 32px 32px;
+  background-image:
+          linear-gradient(45deg, $checker-color-2 25%, transparent 25%, transparent 75%, $checker-color-2 75%, $checker-color-2 100%),
+          linear-gradient(45deg, $checker-color-2 25%, $checker-color-1 25%, $checker-color-1 75%, $checker-color-2 75%, $checker-color-2 100%);
+
+  img {
+    width: 100%;
+    height: auto;
+  }
 }

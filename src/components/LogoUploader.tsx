@@ -1,28 +1,33 @@
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Alert, Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import { useRef, useState } from "react";
-import { MdOutlineUsb } from "react-icons/md";
+import { MdOutlineUsb, MdOutlineUsbOff } from "react-icons/md";
 import { SerialPortState, useSerialPort } from "../hooks/useSerialPort.tsx";
 import hexarray from "hex-array";
 import {
-  createMaxScreenCompressedImageBuffers,
   createMaxScreenLogoUploadBlocks,
-  type MaxScreenCompatibleRawImageData
+  type MaxScreenCompressedImageBuffers
 } from "../utility/maxScreenImageUtility.ts";
+import { toast } from "react-toastify";
+import { AnimatePresence, motion } from "motion/react";
+import { basicFadeInAnimationProps } from "../utility/basicFadeInAnimationVariants.ts";
+import React from "react";
+import { LuImageUp } from "react-icons/lu";
 
 export function LogoUploader(props: {
-  logoData: MaxScreenCompatibleRawImageData
+  maxScreenLogoCompressedImageBuffers: MaxScreenCompressedImageBuffers | null,
 }) {
-  const receiveBufferRef = useRef<number[]>([]);
+  const {maxScreenLogoCompressedImageBuffers} = props;
 
-  const [command, setCommand] = useState("AT+VER");
-  const [serialLog, setSerialLog] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [logoSlotIndex, setLogoSlotIndex] = useState(0);
+  const serialReceiveBufferRef = useRef<number[]>([]);
 
   const serialPortDataReceived = (data: Uint8Array) => {
-    receiveBufferRef.current.push(...data);
+    serialReceiveBufferRef.current.push(...data);
 
     const hex = hexarray.toString(data, {grouping: 1, uppercase: true});
     console.log(`<< [${hex}]`);
-    setSerialLog((log) => log + "\r\n" + hex);
   }
 
   const port = useSerialPort({
@@ -39,7 +44,7 @@ export function LogoUploader(props: {
       },
       {
         baudRate: 115200,
-        bufferSize: 1024 * 1024 //!!!!
+        bufferSize: 1024 * 1024 // Makes sure the packets aren't fragmented
       }
     );
   }
@@ -49,84 +54,171 @@ export function LogoUploader(props: {
   }
 
   const onSendCommand = async () => {
-    const imageBuffers = createMaxScreenCompressedImageBuffers(props.logoData.palette, props.logoData.imageData);
-    const uploadBlocks = createMaxScreenLogoUploadBlocks(1, imageBuffers);
-
     const waitForAck = async (ackByteCount: number) => {
-      while (receiveBufferRef.current.length < ackByteCount) {
+      const timeout = 2000;
+      const startDate = Date.now();
+
+      while (serialReceiveBufferRef.current.length < ackByteCount) {
+        const timeDelta = Date.now() - startDate;
+        if (timeDelta >= timeout) {
+          throw new Error("Timed out waiting for ack, make sure screen is connected properly");
+        }
+
         await new Promise(resolve => setTimeout(resolve, 10));
       }
 
-      const allAckBytesAreExpected = receiveBufferRef.current.slice(ackByteCount).findIndex(x => x !== 0x55) === -1;
+      const allAckBytesAreExpected = serialReceiveBufferRef.current.slice(ackByteCount).findIndex(x => x !== 0x55) === -1;
       if (!allAckBytesAreExpected) {
         throw new Error("Invalid ack received");
       }
     }
 
+    setIsUploading(true);
+
     const writer = port.port!.writable.getWriter();
+    try {
+      const uploadBlocks = createMaxScreenLogoUploadBlocks(logoSlotIndex, maxScreenLogoCompressedImageBuffers!);
 
-    for (let uploadBlockIndex = 0; uploadBlockIndex < uploadBlocks.length; uploadBlockIndex++) {
-      const uploadBlock = uploadBlocks[uploadBlockIndex];
-      console.log(`Uploading block ${uploadBlockIndex + 1} / ${uploadBlocks.length} (${uploadBlock.length} bytes)`);
-      console.log(`>> [${hexarray.toString(uploadBlock, {grouping: 1, uppercase: true})}]`);
+      setUploadProgress(0);
+      const uploadStartTime = Date.now();
+      for (let uploadBlockIndex = 0; uploadBlockIndex < uploadBlocks.length; uploadBlockIndex++) {
+        const uploadBlock = uploadBlocks[uploadBlockIndex];
+        console.log(`Uploading block ${uploadBlockIndex + 1} / ${uploadBlocks.length} (${uploadBlock.length} bytes)`);
+        console.log(`>> [${hexarray.toString(uploadBlock, {grouping: 1, uppercase: true})}]`);
 
-      receiveBufferRef.current.length = 0;
-      await writer.write(uploadBlock);
+        serialReceiveBufferRef.current.length = 0;
+        await writer.write(uploadBlock);
 
-      let expectedAckBytesCount: number;
-      switch (uploadBlockIndex) {
-        case 0:
-          expectedAckBytesCount = 1;
-          break;
-        case uploadBlocks.length - 1:
-          // Last block has an extra byte to confirm upload completion
-          expectedAckBytesCount = uploadBlock.length + 1;
-          break;
-        default:
-          expectedAckBytesCount = uploadBlock.length;
-          break;
+        let expectedAckBytesCount: number;
+        switch (uploadBlockIndex) {
+          case 0:
+            expectedAckBytesCount = 1;
+            break;
+          case uploadBlocks.length - 1:
+            // Last block has an extra byte to confirm upload completion
+            expectedAckBytesCount = uploadBlock.length + 1;
+            break;
+          default:
+            expectedAckBytesCount = uploadBlock.length;
+            break;
+        }
+
+        await waitForAck(expectedAckBytesCount);
+
+        setUploadProgress(uploadBlockIndex / (uploadBlocks.length - 1));
       }
 
-      await waitForAck(expectedAckBytesCount);
+      setUploadProgress(1);
+      console.log(`Logo upload completed! Took ${Date.now() - uploadStartTime} ms`);
+      toast.success(`Logo uploaded to slot ${logoSlotIndex + 1}!`);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message);
+    } finally {
+      writer.releaseLock();
     }
 
-    console.log("Logo upload completed!")
-    writer.releaseLock();
+    setIsUploading(false);
   }
 
+  const hasValidLogo = maxScreenLogoCompressedImageBuffers?.valid === true;
+
   return <>
-    {port.portState !== SerialPortState.Open && <>
-        <Button
-            disabled={port.portState !== SerialPortState.Closed}
-            onClick={() => onConnectClicked()}
-            className="big-button mt-3"
-        >
-          {port.portState === SerialPortState.Closed && <><MdOutlineUsb/> Connect</>}
-          {port.portState === SerialPortState.Opening && <><Spinner size={"sm"}/> Connecting...</>}
-          {port.portState === SerialPortState.Closing && <><Spinner size={"sm"}/> Disconnecting...</>}
-        </Button>
-    </>}
+    <Row className="mt-4">
+      <Col xs={12} sm="auto" className="align-content-center">
+        <h2 className="mb-0">
+          2. Connect to Screen
+        </h2>
+      </Col>
+      <Col>
+        {port.portState !== SerialPortState.Open && <>
+            <Button
+                disabled={port.portState !== SerialPortState.Closed}
+                onClick={() => onConnectClicked()}
+                className="connect-button"
+            >
+              {port.portState === SerialPortState.Closed && <><MdOutlineUsb/> Connect</>}
+              {port.portState === SerialPortState.Opening && <><Spinner size="sm" className="me-2"/> Connecting...</>}
+              {port.portState === SerialPortState.Closing && <><MdOutlineUsb/> Connect</>}
+            </Button>
+        </>}
 
-    {port.portState === SerialPortState.Open && <>
-        <Button
-            onClick={() => onDisconnectClicked()}
-            className="big-button mt-3"
-        >
-            Disconnect
-        </Button>
+        {port.portState === SerialPortState.Open && <>
+            <Button
+                disabled={isUploading}
+                onClick={() => onDisconnectClicked()}
+                className="connect-button"
+            >
+                <MdOutlineUsbOff/> Disconnect
+            </Button>
+        </>}
+      </Col>
+    </Row>
 
-        <Form.Group className="mb-3">
-            <Form.Label>Command</Form.Label>
-            <Form.Control type="text" placeholder="command..." value={command}
-                          onChange={e => setCommand(e.target.value)}/>
-        </Form.Group>
+    <AnimatePresence>
+      {port.portState === SerialPortState.Open && <>
+          <motion.div
+              className="d-flex flex-column"
+              {...basicFadeInAnimationProps(0.2, false, false)}
+          >
+            <h2 className="mt-3">3. Upload Logo</h2>
 
-        <Button onClick={() => onSendCommand()}>Send command</Button>
+            {!hasValidLogo && <>
+                <Alert variant="warning" className="mb-0">Please select a valid logo image first.</Alert>
+            </>}
 
-        <Form.Group className="mb-3">
-            <Form.Label>Log</Form.Label>
-            <Form.Control as="textarea" placeholder="log..." rows={10} readOnly value={serialLog}/>
-        </Form.Group>
-    </>}
+            {hasValidLogo && <>
+                <Form.Label className="mt-0">Logo slot:</Form.Label>
+
+                <div className="btn-group" role="group">
+                  {[...Array(10)].map((_, logoSlotIndex) => (
+                    <React.Fragment key={`logo-slot-radio-${logoSlotIndex}`}>
+                      <input
+                        type="radio"
+                        className="btn-check"
+                        id={`logoSlotIndexRadio-${logoSlotIndex}`}
+                        name="logoSlotIndexRadio"
+                        defaultChecked={logoSlotIndex === 0}
+                        value={logoSlotIndex.toString()}
+                        onChange={e => setLogoSlotIndex(parseInt(e.target.value))}
+                      />
+
+                      <Button
+                        as="label"
+                        htmlFor={`logoSlotIndexRadio-${logoSlotIndex}`}
+                        variant="outline-primary"
+                        className="logo-slot-button"
+                      >
+                        {logoSlotIndex + 1}
+                      </Button>
+                    </React.Fragment>
+                  ))}
+                </div>
+
+                <Button
+                    onClick={() => onSendCommand()}
+                    disabled={isUploading}
+                    className={`mt-3 big-button ${isUploading ? "progress-bar progress-bar-striped progress-bar-animated" : ""}`}
+                >
+                  {isUploading && <>
+                      <Spinner size="sm" className="me-2"/> Uploading...
+                  </>}
+                  {!isUploading && <><LuImageUp/> Upload Logo</>}
+                </Button>
+
+                <AnimatePresence>
+                  {isUploading && <>
+                      <motion.div
+                          className="text-center mt-3 fs-4 fw-bold"
+                          {...basicFadeInAnimationProps(0.2, false, false)}
+                      >
+                        {uploadProgress.toLocaleString('en-US', {style: 'percent', maximumFractionDigits: 0})}
+                      </motion.div>
+                  </>}
+                </AnimatePresence>
+            </>}
+          </motion.div>
+      </>}
+    </AnimatePresence>
   </>;
 }

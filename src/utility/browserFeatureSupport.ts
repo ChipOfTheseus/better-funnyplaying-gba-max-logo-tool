@@ -1,1 +1,2 @@
-export const IsWebSerialSupported = typeof window !== "undefined" && typeof navigator.serial !== "undefined";
+// Fake support when prerendering
+export const IsWebSerialSupported = typeof window === "undefined" || typeof navigator.serial !== "undefined";
