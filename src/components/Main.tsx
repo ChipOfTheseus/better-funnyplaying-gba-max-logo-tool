@@ -18,7 +18,7 @@ function Main() {
             Better FunnyPlaying GBA MAX Screen Logo Tool
           </h1>
 
-          <h2>1. Select Logo Image</h2>
+          <h2>1. Choose Logo Image</h2>
           <LogoConverter
             maxScreenLogoCompressedImageBuffers={maxScreenLogoCompressedImageBuffers}
             setMaxScreenLogoCompressedImageBuffers={setMaxScreenLogoCompressedImageBuffers}

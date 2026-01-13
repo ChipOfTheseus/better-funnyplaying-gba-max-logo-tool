@@ -252,7 +252,7 @@ function LogoConverter(props: {
     setMaxScreenLogoImageData(null);
 
     updateConvertedImageData();
-  }, [backgroundColor, brightness, contrast, maxColorCount, useColorization, colorizationColor, imageQuantizationType, sourceImageFile, sourceImageGallery]);
+  }, [backgroundColor, brightness, contrast, maxColorCount, useColorization, colorizationColor, imageQuantizationType, sourceImageFile, sourceImageGallery, sourceImageSource]);
 
   return <>
     <div className="d-flex flex-column gap-3">
@@ -285,7 +285,7 @@ function LogoConverter(props: {
             type="radio"
             id="sourceImageSourceGallery"
             name="sourceImageSource"
-            label={<>Select from premade logos</>}
+            label={<>Choose from premade logos</>}
             value={SourceImageSourceType.Gallery}
             onChange={e => setSourceImageSource(parseInt(e.target.value))}
           />
@@ -305,147 +305,146 @@ function LogoConverter(props: {
 
     {sourceImageErrorText && <Alert variant="danger mt-3 mb-0">{sourceImageErrorText}</Alert>}
 
-    <AnimatePresence>
-      {sourceImageCanvas !== null && <>
-          <motion.div {...basicFadeInAnimationProps(0.25, false, false)}>
-              <canvas
-                  ref={previewCanvasRef}
-                  width={MaxScreen.logoWidth}
-                  height={MaxScreen.logoHeight}
-                  className="d-block mx-auto my-4 max-logo-image"
-              />
+    <motion.div
+      {...basicFadeInAnimationProps(0.25, false, false)}
+      animate={sourceImageCanvas !== null ? "visible" : "hidden"}
+    >
+      <canvas
+        ref={previewCanvasRef}
+        width={MaxScreen.logoWidth}
+        height={MaxScreen.logoHeight}
+        className="d-block mx-auto my-4 max-logo-image"
+      />
 
-              <Row className="justify-content-center g-4">
-                {sourceImageHasNonOpaquePixels && (
-                  <Form.Group as={Col} md={6} lg={3}>
-                    <Form.Label>Background color:</Form.Label>
-                    <Form.Control
-                      type="color"
-                      className="w-100"
-                      value={backgroundColor}
-                      onChange={e => setBackgroundColor(e.currentTarget.value)}
-                    />
-                  </Form.Group>
-                )}
+      <Row className="justify-content-center g-4">
+        {sourceImageHasNonOpaquePixels && (
+          <Form.Group as={Col} md={6} lg={3}>
+            <Form.Label>Background color:</Form.Label>
+            <Form.Control
+              type="color"
+              className="w-100"
+              value={backgroundColor}
+              onChange={e => setBackgroundColor(e.currentTarget.value)}
+            />
+          </Form.Group>
+        )}
 
-                  <Form.Group as={Col} md={6} lg={3}>
-                      <Form.Label>
-                          <Form.Check
-                              type="checkbox"
-                              id="use-colorization"
-                              label="Apply color tint"
-                              checked={useColorization}
-                              onChange={e => setUseColorization(e.target.checked)}
-                          />
-                      </Form.Label>
+        <Form.Group as={Col} md={6} lg={3}>
+          <Form.Label>
+            <Form.Check
+              type="checkbox"
+              id="use-colorization"
+              label="Apply color tint"
+              checked={useColorization}
+              onChange={e => setUseColorization(e.target.checked)}
+            />
+          </Form.Label>
 
-                      <Form.Control
-                          type="color"
-                          className="w-100"
-                          disabled={!useColorization}
-                          value={colorizationColor}
-                          onChange={e => setColorizationColor(e.currentTarget.value)}
-                      />
-                  </Form.Group>
+          <Form.Control
+            type="color"
+            className="w-100"
+            disabled={!useColorization}
+            value={colorizationColor}
+            onChange={e => setColorizationColor(e.currentTarget.value)}
+          />
+        </Form.Group>
 
-                  <Form.Group as={Col} md={6} lg={2}>
-                      <Form.Label>Brightness: {brightness}</Form.Label>
-                      <Form.Range
-                          min={-200}
-                          max={200}
-                          step={1}
-                          value={brightness}
-                          onChange={e => setBrightness(Number(e.currentTarget.value))}
-                      />
-                  </Form.Group>
+        <Form.Group as={Col} md={6} lg={2}>
+          <Form.Label>Brightness: {brightness}</Form.Label>
+          <Form.Range
+            min={-200}
+            max={200}
+            step={1}
+            value={brightness}
+            onChange={e => setBrightness(Number(e.currentTarget.value))}
+          />
+        </Form.Group>
 
-                  <Form.Group as={Col} md={6} lg={2}>
-                      <Form.Label>Contrast: {contrast}</Form.Label>
-                      <Form.Range
-                          min={0.1}
-                          max={2}
-                          step={0.05}
-                          value={contrast}
-                          onChange={e => setContrast(Number(e.currentTarget.value))}
-                      />
-                  </Form.Group>
+        <Form.Group as={Col} md={6} lg={2}>
+          <Form.Label>Contrast: {contrast}</Form.Label>
+          <Form.Range
+            min={0.1}
+            max={2}
+            step={0.05}
+            value={contrast}
+            onChange={e => setContrast(Number(e.currentTarget.value))}
+          />
+        </Form.Group>
 
-                  <Form.Group as={Col} md={6} lg={2}>
-                      <Form.Label>Max colors: {maxColorCount}</Form.Label>
-                      <Form.Range
-                          min={2}
-                          max={4}
-                          step={1}
-                          value={maxColorCount}
-                          onChange={e => setMaxColorCount(Number(e.currentTarget.value))}
-                      />
-                  </Form.Group>
+        <Form.Group as={Col} md={6} lg={2}>
+          <Form.Label>Max colors: {maxColorCount}</Form.Label>
+          <Form.Range
+            min={2}
+            max={4}
+            step={1}
+            value={maxColorCount}
+            onChange={e => setMaxColorCount(Number(e.currentTarget.value))}
+          />
+        </Form.Group>
 
-                  <Form.Group as={Col} md={6} lg={2}>
-                      <Form.Label>Dithering:</Form.Label>
-                      <Form.Select
-                          value={imageQuantizationType}
-                          onChange={e => setImageQuantizationType(e.target.value as ImageQuantization)}
-                      >
-                        {ImageQuantizationTypes.map(type => (
-                          <option
-                            key={`image-quantization-${type.type}`}
-                            value={type.type}
-                          >{type.name}</option>
-                        ))}
-                      </Form.Select>
-                  </Form.Group>
+        <Form.Group as={Col} md={6} lg={2}>
+          <Form.Label>Dithering:</Form.Label>
+          <Form.Select
+            value={imageQuantizationType}
+            onChange={e => setImageQuantizationType(e.target.value as ImageQuantization)}
+          >
+            {ImageQuantizationTypes.map(type => (
+              <option
+                key={`image-quantization-${type.type}`}
+                value={type.type}
+              >{type.name}</option>
+            ))}
+          </Form.Select>
+        </Form.Group>
 
-                  <Col xs={12} lg={1} className="d-flex py-2 justify-content-center">
-                      <Button onClick={onResetImageAdjustmentsClick} className="px-3">
-                          Reset
-                      </Button>
-                  </Col>
-              </Row>
+        <Col xs={12} lg={1} className="d-flex py-2 justify-content-center">
+          <Button onClick={onResetImageAdjustmentsClick} className="px-3">
+            Reset
+          </Button>
+        </Col>
+      </Row>
 
-              <AnimatePresence>
-                {maxScreenLogoCompressedImageBuffers !== null && !isCompressedImageValid && <>
-                    <motion.div {...basicFadeInAnimationProps(0.5, false, false)}>
-                        <Alert variant="danger" className="mt-3 mb-0">
-                            <p>
-                                Compressed logo image size:{" "}
-                                <span className="fw-bold">
+      <AnimatePresence>
+        {maxScreenLogoCompressedImageBuffers !== null && !isCompressedImageValid && <>
+            <motion.div {...basicFadeInAnimationProps(0.5, false, false)}>
+                <Alert variant="danger" className="mt-3 mb-0">
+                    <p>
+                        Compressed logo image size:{" "}
+                        <span className="fw-bold">
                           {maxScreenLogoCompressedImageBuffers!.compressedImageDataBuffer.length} / {MaxScreen.maxLogoUploadImageDataSize} bytes
                           </span>{" "}
-                                ({(maxScreenLogoCompressedImageBuffers!.compressedImageDataBuffer.length / MaxScreen.maxLogoUploadImageDataSize - 1.0)
-                              .toLocaleString('en-US', {style: 'percent', maximumFractionDigits: 2})} overboard).
-                            </p>
+                        ({(maxScreenLogoCompressedImageBuffers!.compressedImageDataBuffer.length / MaxScreen.maxLogoUploadImageDataSize - 1.0)
+                      .toLocaleString('en-US', {style: 'percent', maximumFractionDigits: 2})} overboard).
+                    </p>
 
-                            <p>
-                                The compressed image exceeds the size limit. This generally means the image is too
-                                complex.
-                                Things you can try to get it under the limit:
-                            </p>
+                    <p>
+                        The compressed image exceeds the size limit. This generally means the image is too
+                        complex.
+                        Things you can try to get it under the limit:
+                    </p>
 
-                            <ul className="mb-0">
-                                <li>Increasing brightness slightly.</li>
-                                <li>Decreasing contrast slightly.</li>
-                                <li>Setting dithering type to None.</li>
-                                <li>Reducing max colors count.</li>
-                                <li>Adjusting the source image to reduce the amount of fine detail.</li>
-                            </ul>
-                        </Alert>
-                    </motion.div>
-                </>}
-              </AnimatePresence>
+                    <ul className="mb-0">
+                        <li>Increasing brightness slightly.</li>
+                        <li>Decreasing contrast slightly.</li>
+                        <li>Setting dithering type to None.</li>
+                        <li>Reducing max colors count.</li>
+                        <li>Adjusting the source image to reduce the amount of fine detail.</li>
+                    </ul>
+                </Alert>
+            </motion.div>
+        </>}
+      </AnimatePresence>
 
-              <div className="d-flex flex-row justify-content-center gap-4 pt-3">
-                  <Button
-                      disabled={!isCompressedImageValid}
-                      onClick={() => onSaveConvertedImageAsPng()}
-                      className="medium-button mx-0"
-                  >
-                      <MdSave/> Save as PNG
-                  </Button>
-              </div>
-          </motion.div>
-      </>}
-    </AnimatePresence>
+      <div className="d-flex flex-row justify-content-center gap-4 pt-3">
+        <Button
+          disabled={!isCompressedImageValid}
+          onClick={() => onSaveConvertedImageAsPng()}
+          className="medium-button mx-0"
+        >
+          <MdSave/> Save as PNG
+        </Button>
+      </div>
+    </motion.div>
 
     <PremadeLogosGalleryModal
       show={showGalleryModal}

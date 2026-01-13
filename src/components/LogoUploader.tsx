@@ -164,7 +164,7 @@ export function LogoUploader(props: {
             <h2 className="mt-3">3. Upload Logo</h2>
 
             {!hasValidLogo && <>
-                <Alert variant="warning" className="mb-0">Please select a valid logo image first.</Alert>
+                <Alert variant="warning" className="mb-0">Please choose a valid logo image first.</Alert>
             </>}
 
             {hasValidLogo && <>
