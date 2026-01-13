@@ -53,7 +53,7 @@ function Main() {
           You can use 'Save As' to save it as an <span className="font-monospace">.html</span> file and use it offline.
         </span>
 
-        <a href="https://www.chipoftheseus.shop/linktree" target="_blank" className="text-secondary-emphasis">
+        <a href="https://github.com/ChipOfTheseus/better-funnyplaying-gba-max-logo-tool" target="_blank" className="text-secondary-emphasis">
           GitHub Repo
         </a>
 

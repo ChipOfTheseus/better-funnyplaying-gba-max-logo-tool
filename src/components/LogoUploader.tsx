@@ -110,7 +110,7 @@ export function LogoUploader(props: {
 
       setUploadProgress(1);
       console.log(`Logo upload completed! Took ${Date.now() - uploadStartTime} ms`);
-      toast.success(`Logo uploaded to slot ${logoSlotIndex + 1}!`);
+      toast.success(`Logo uploaded to slot ${logoSlotIndex + 1}!`, { position: "bottom-center" });
     } catch (err: any) {
       console.error(err);
       toast.error(err.message);
