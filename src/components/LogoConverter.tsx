@@ -160,6 +160,9 @@ function LogoConverter(props: {
     setSourceImageFile(file);
 
     resetImageAdjustments(null);
+
+    setMaxScreenLogoImageData(null);
+    updateConvertedImageData.flush();
   }
 
   const loadImageFromGallery = async (logo: PremadeLogoData | null) => {
@@ -174,6 +177,7 @@ function LogoConverter(props: {
     setSourceImageGallery(logo);
 
     resetImageAdjustments(logo);
+    updateConvertedImageData.flush();
   }
 
   const onResetImageAdjustmentsClick = () => {
@@ -227,7 +231,7 @@ function LogoConverter(props: {
     const compressedImageBuffers = createMaxScreenCompressedImageBuffers(compatibleRawImageData.palette, compatibleRawImageData.imageData);
 
     setMaxScreenLogoCompressedImageBuffers(compressedImageBuffers);
-    console.log("compressedImageBuffers.compressedImageDataBuffer.length", compressedImageBuffers.compressedImageDataBuffer.length)
+    console.log("compressedImageDataBuffer.length", compressedImageBuffers.compressedImageDataBuffer.length);
 
     const previewContext = previewCanvasRef.current.getContext('2d', {willReadFrequently: true})!;
     previewContext.putImageData(compatibleRawImageData.imageData, 0, 0);
@@ -248,7 +252,7 @@ function LogoConverter(props: {
     setMaxScreenLogoImageData(null);
 
     updateConvertedImageData();
-  }, [backgroundColor, brightness, contrast, maxColorCount, useColorization, colorizationColor, imageQuantizationType, sourceImageCanvas]);
+  }, [backgroundColor, brightness, contrast, maxColorCount, useColorization, colorizationColor, imageQuantizationType, sourceImageFile]);
 
   return <>
     <div className="d-flex flex-column gap-3">
