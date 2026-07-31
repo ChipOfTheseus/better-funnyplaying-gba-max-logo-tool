@@ -24,10 +24,10 @@ export function LogoUploader(props: {
   const serialReceiveBufferRef = useRef<number[]>([]);
 
   const serialPortDataReceived = (data: Uint8Array) => {
-    serialReceiveBufferRef.current.push(...data);
-
     const hex = hexarray.toString(data, {grouping: 1, uppercase: true});
     console.log(`<< [${hex}]`);
+
+    serialReceiveBufferRef.current.push(...data);
   }
 
   const port = useSerialPort({
@@ -44,7 +44,7 @@ export function LogoUploader(props: {
       },
       {
         baudRate: 115200,
-        bufferSize: 1024 * 1024 // Makes sure the packets aren't fragmented
+        //bufferSize: 1024 * 1024 // Makes sure the packets aren't fragmented
       }
     );
   }
