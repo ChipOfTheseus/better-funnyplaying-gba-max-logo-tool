@@ -1,5 +1,4 @@
 # Better FunnyPlaying GBA IPS MAX Screen Logo Tool
-
 A (much) better FunnyPlaying GBA IPS MAX screen logo converter &amp; uploader tool.
 
 As compared to the official tool:
@@ -16,6 +15,15 @@ As compared to the official tool:
 <details>
 
 <summary>Page Template README</summary>
+
+This repository is the FunnyPlaying GBA IPS MAX configurator project and uses a reusable sibling template project:
+
+- `@chipoftheseus/configurator-template` is the reusable configurator shell in the sibling `../configurator-template` directory. It provides the shared layout/application chrome and TypeScript base configuration.
+- `@chipoftheseus/fp-max-logo-uploader` is this project. It owns serial handling, image processing, gallery/editor UI, all styles/assets, the MAX image format, compression and upload protocol, branding, and the buildable single-file app.
+
+The FP MAX project references the template through a local file dependency declared in the root `package.json`. The template owns the framework and build-tool dependency versions, shared TypeScript/Vite/ESLint configuration, and application bootstrap helper. The template directory can be moved into its own git repository without changing the FP MAX source.
+
+Run the FP MAX app from the repository root with `yarn dev`, `yarn build`, or `yarn preview`.
 
 # React + TypeScript + Vite
 
@@ -36,29 +44,29 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+    globalIgnores(['dist']),
+    {
+        files: ['**/*.{ts,tsx}'],
+        extends: [
+            // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+            // Remove tseslint.configs.recommended and replace with this
+            tseslint.configs.recommendedTypeChecked,
+            // Alternatively, use this for stricter rules
+            tseslint.configs.strictTypeChecked,
+            // Optionally, add this for stylistic rules
+            tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+            // Other configs...
+        ],
+        languageOptions: {
+            parserOptions: {
+                project: ['./tsconfig.node.json', './tsconfig.app.json'],
+                tsconfigRootDir: import.meta.dirname,
+            },
+            // other options...
+        },
     },
-  },
 ])
 ```
 
@@ -70,24 +78,24 @@ import reactX from 'eslint-plugin-react-x'
 import reactDom from 'eslint-plugin-react-dom'
 
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+    globalIgnores(['dist']),
+    {
+        files: ['**/*.{ts,tsx}'],
+        extends: [
+            // Other configs...
+            // Enable lint rules for React
+            reactX.configs['recommended-typescript'],
+            // Enable lint rules for React DOM
+            reactDom.configs.recommended,
+        ],
+        languageOptions: {
+            parserOptions: {
+                project: ['./tsconfig.node.json', './tsconfig.app.json'],
+                tsconfigRootDir: import.meta.dirname,
+            },
+            // other options...
+        },
     },
-  },
 ])
 ```
 

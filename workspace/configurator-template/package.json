@@ -1,0 +1,33 @@
+{
+  "name": "@chipoftheseus/configurator-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "bootstrap": "^5.3.8",
+    "bootswatch": "^5.3.8",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "motion": "^12.23.24",
+    "react": "^19.2.0",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5",
+    "sass-embedded": "^1.93.3",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.3",
+    "use-async-effect": "^2.2.7",
+    "use-debounce": "^10.0.6",
+    "vite": "^7.2.2",
+    "vite-plugin-singlefile": "^2.3.0",
+    "vite-prerender-plugin": "^0.5.12"
+  }
+}
